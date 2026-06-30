@@ -1,17 +1,17 @@
 name: Send Email
 
 'on':
- push:
-  branches:
-   - main
+  push:
+   branches:
+    - main
 
 jobs:
- send-email:
-  runs-on: ubuntu-latest
-
+  send-email:
+    runs-on: ubuntu-latest
 steps:
   - name: Checkout
-    uses: actions/checkout@v4
+     uses: actions/checkout@v4
+
 
   - name: Send Email
     uses: dawidd6/action-send-mail@v3
