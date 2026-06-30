@@ -20,15 +20,10 @@ steps:
       server_address: smtp.gmail.com
       server_port: 465
       secure: true
-
       username: ${{ secrets.EMAIL_USERNAME }}
       password: ${{ secrets.EMAIL_PASSWORD }}
-
       subject: New File Uploaded
-
-      body: |
-        A new file was uploaded to GitHub.
-
+      body: A new file was uploaded to GitHub.
       to: kanakaraj645@gmail.com
       from: GitHub Automation
 
