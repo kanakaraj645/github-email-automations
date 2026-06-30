@@ -9,19 +9,19 @@ jobs:
   send-email:
     runs-on: ubuntu-latest
     
-steps:
-  - name: Checkout
-    uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+         uses: actions/checkout@v4
 
-  - name: Send Email
-    uses: dawidd6/action-send-mail@v3
-    with:
-      server_address: smtp.gmail.com
-      server_port: 465
-      secure: true
-      username: ${{ secrets.EMAIL_USERNAME }}
-      password: ${{ secrets.EMAIL_PASSWORD }}
-      subject: New File Uploaded
+          - name: Send Email
+             uses: dawidd6/action-send-mail@v3
+              with:
+               server_address: smtp.gmail.com
+                server_port: 465
+                 secure: true
+                  username: ${{ secrets.EMAIL_USERNAME }}
+                   password: ${{ secrets.EMAIL_PASSWORD }}
+                    subject: New File Uploaded
       body: A new file was uploaded to GitHub.
       to: kanakaraj645@gmail.com
       from: GitHub Automation
