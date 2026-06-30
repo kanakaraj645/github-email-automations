@@ -21,6 +21,6 @@ jobs:
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: New File Uploaded
           body: A new file was uploaded to GitHub by raj.
-          to: raviteja6624@gmail.com
+          to: bashipaka18@gmail.com
           from: GitHub Automation
-          attachments: test.txt
+          attachments: test.ext
