@@ -12,21 +12,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          # Fetches commit history so we can compare what changed
           fetch-depth: 2
 
       - name: Detect Changed File
         id: detect_file
         run: |
-          # Get the name of the file changed in the last commit
+          # Commit lo change/add ayina modati file name ni teesukuntundi
           CHANGED_FILE=$(git diff --name-only HEAD~1 HEAD | head -n 1)
           echo "Found file: $CHANGED_FILE"
-          
-          # Save it as an output variable for the next step to use
           echo "file_path=$CHANGED_FILE" >> $GITHUB_OUTPUT
 
       - name: Send Email with Dynamic Attachment
-        # Only run if a file was actually found and it still exists
         if: ${{ steps.detect_file.outputs.file_path != '' }}
         uses: dawidd6/action-send-mail@v3
         with:
@@ -39,8 +35,8 @@ jobs:
           to: ${{ secrets.EMAIL_TO }}
           subject: New File Uploaded to GitHub
           body: |
-            A new file has been pushed to the repository.
+            Hi, A new file has been pushed to the repository.
             
             File Name: ${{ steps.detect_file.outputs.file_path }}
-          # Dynamically attaches whatever file was detected above
+          # Ee line automation ni chuskuntundi, hardcode avasaram ledu
           attachments: ${{ steps.detect_file.outputs.file_path }}
