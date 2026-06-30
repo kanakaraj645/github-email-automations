@@ -33,7 +33,7 @@ jobs:
       body: |
         A new file was uploaded to GitHub.
 
-      to: bashipaka18@gmail.com
+      to: raviteja6624@gmail.com
       from: GitHub Automation
 
       attachments: ${{ steps.changed-file.outputs.FILE }}
