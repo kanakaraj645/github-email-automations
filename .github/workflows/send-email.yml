@@ -21,7 +21,7 @@ jobs:
       username: ${{ secrets.EMAIL_USERNAME }}
       password: ${{ secrets.EMAIL_PASSWORD }}
       subject: New File Uploaded
-      body: A new file was uploaded to GitHub.
-      to: kanakaraj645@gmail.com
+      body: A new file was uploaded to GitHub by raj.
+      to: raviteja6624@gmail.com
       from: GitHub Automation
 
