@@ -12,36 +12,35 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          # Fetches commit history so we can compare what changed
           fetch-depth: 2
 
-      - name: Get changed files
+      - name: Detect Changed File
+        id: detect_file
         run: |
-          git diff --name-only HEAD~1 HEAD > files.txt
+          # Get the name of the file changed in the last commit
+          CHANGED_FILE=$(git diff --name-only HEAD~1 HEAD | head -n 1)
+          echo "Found file: $CHANGED_FILE"
+          
+          # Save it as an output variable for the next step to use
+          echo "file_path=$CHANGED_FILE" >> $GITHUB_OUTPUT
 
-      - name: Create attachment folder
-        run: |
-          mkdir -p attachments
-          while read file; do
-            if [[ -f "$file" && "$file" == uploads/* ]]; then
-              cp "$file" attachments/
-            fi
-          done < files.txt
-
-      - name: Send Email with real file attachment
+      - name: Send Email with Dynamic Attachment
+        # Only run if a file was actually found and it still exists
+        if: ${{ steps.detect_file.outputs.file_path != '' }}
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.SMTP_HOST }}
-          # Port 587 combined with secure: false triggers standard STARTTLS upgrade,
-          # which stops the "wrong version number" SSL crash.
           server_port: 587
           secure: false
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           from: ${{ secrets.EMAIL_FROM }}
           to: ${{ secrets.EMAIL_TO }}
-          subject: New File Added in GitHub Repo
+          subject: New File Uploaded to GitHub
           body: |
-            A new file was added in your repository.
-          # Explicitly target the folder contents
-          attachments: |
-            attachments/*
+            A new file has been pushed to the repository.
+            
+            File Name: ${{ steps.detect_file.outputs.file_path }}
+          # Dynamically attaches whatever file was detected above
+          attachments: ${{ steps.detect_file.outputs.file_path }}
