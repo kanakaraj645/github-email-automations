@@ -1,49 +1,47 @@
 name: Send Email on New File
 
 on:
- push:
-  branches:
-   - main
+  push:
+    branches:
+      - main
 
 jobs:
- send_email:
-  runs-on: ubuntu-latest
-  steps:
-  - name: Checkout repository
-    uses: actions/checkout@v4
-    with:
-      fetch-depth: 2
+  send_email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
-  - name: Get changed files
-    run: |
-      git diff --name-only HEAD~1 HEAD > files.txt
+      - name: Get changed files
+        run: |
+          git diff --name-only HEAD~1 HEAD > files.txt
 
-  - name: Create attachment folder
-    run: |
-      mkdir -p attachments
+      - name: Create attachment folder
+        run: |
+          mkdir -p attachments
+          while read file; do
+            if [[ -f "$file" && "$file" == uploads/* ]]; then
+              cp "$file" attachments/
+            fi
+          done < files.txt
 
-      while read file; do
-        if [[ -f "$file" && "$file" == uploads/* ]]; then
-          cp "$file" attachments/
-        fi
-      done < files.txt
-
-  - name: Send Email with real file attachment
-    uses: dawidd6/action-send-mail@v3
-    with:
-      server_address: ${{ secrets.SMTP_HOST }}
-      server_port: ${{ secrets.SMTP_PORT }}
-      secure: true
-      username: ${{ secrets.EMAIL_USERNAME }}
-      password: ${{ secrets.EMAIL_PASSWORD }}
-
-      from: ${{ secrets.EMAIL_FROM }}
-      to: ${{ secrets.EMAIL_TO }}
-
-      subject: New File Added in GitHub Repo
-
-      body: |
-        A new file was added in your repository.
-
-      attachments: attachments/*
-
+      - name: Send Email with real file attachment
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_HOST }}
+          # Port 587 combined with secure: false triggers standard STARTTLS upgrade,
+          # which stops the "wrong version number" SSL crash.
+          server_port: 587
+          secure: false
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          from: ${{ secrets.EMAIL_FROM }}
+          to: ${{ secrets.EMAIL_TO }}
+          subject: New File Added in GitHub Repo
+          body: |
+            A new file was added in your repository.
+          # Explicitly target the folder contents
+          attachments: |
+            attachments/*
