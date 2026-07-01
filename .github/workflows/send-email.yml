@@ -8,6 +8,7 @@ on:
 jobs:
   send_email:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -33,10 +34,11 @@ jobs:
           password: ${{ secrets.EMAIL_PASSWORD }}
           from: ${{ secrets.EMAIL_FROM }}
           to: ${{ secrets.EMAIL_TO }}
-          subject: New File Uploaded to GitHub
+          subject: "${{ github.event.head_commit.message }}"
           body: |
-            Hi, A new file has been pushed to the repository.
+            Hi,
+            
+            A new file has been pushed to the repository.
             
             File Name: ${{ steps.detect_file.outputs.file_path }}
-          # Ee line automation ni chuskuntundi, hardcode avasaram ledu
           attachments: ${{ steps.detect_file.outputs.file_path }}
